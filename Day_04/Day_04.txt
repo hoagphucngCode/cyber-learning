@@ -1,0 +1,163 @@
+1/ ip: ip a
+- lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+	link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    	inet 127.0.0.1/8 scope host lo
+       		valid_lft forever preferred_lft forever
+    	inet6 ::1/128 scope host noprefixroute 
+       		valid_lft forever preferred_lft forever
+- eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+	link/ether 00:0c:29:98:ba:d6 brd ff:ff:ff:ff:ff:ff
+    	inet 192.168.163.128/24 brd 192.168.163.255 scope global dynamic noprefixroute eth0
+       		valid_lft 1618sec preferred_lft 1618sec
+    	inet6 fe80::4662:db4c:38ed:db45/64 scope link noprefixroute 
+       		valid_lft forever preferred_lft forever
+- eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+	link/ether 00:0c:29:98:ba:e0 brd ff:ff:ff:ff:ff:ff
+    	inet 192.168.246.128/24 brd 192.168.246.255 scope global dynamic noprefixroute eth1
+       		valid_lft 1618sec preferred_lft 1618sec
+    	inet6 fe80::6a1f:f603:1786:612a/64 scope link noprefixroute 
+       		valid_lft forever preferred_lft forever
+2/ ping: ping -c 4 8.8.8.8
+- 4 packets transmitted, 4 received, 0% packet loss, time 3007ms
+3/ Follow the package path: traceroute 8.8.8.8
+- traceroute to 8.8.8.8 (8.8.8.8), 30 hops max, 60 byte packets
+4/ Port & service listening: sudo ss -tuln OR sudo netstat -tuln
+- Netid           State           Recv-Q           Send-Q                     Local Address:Port                     Peer Address:Port
+- Proto Recv-Q Send-Q Local Address           Foreign Address         State
+5/ Introduction nmap:
+- Command:
+nmap -F <target IP>
+nmap -p- <target IP>
+nmap -sC -sV -p 22,80,443 <target IP>
+nmap - A <target_ip>
+- Output: nmap -sC -sV -p- 127.0.0.1
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-10-22 12:10 EDT
+Nmap scan report for localhost (127.0.0.1)
+Host is up (0.0000060s latency).
+All 65535 scanned ports on localhost (127.0.0.1) are in ignored states.
+Not shown: 65535 closed tcp ports (reset)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 1.63 seconds
+6/ Curl: 
+- Command: 
+curl -I http://127.0.0.1:8000/        # chỉ header
+curl -v http://127.0.0.1:8000/       # verbose + header + body
+curl -v http://127.0.0.1:8000/robots.txt
+- Output:
+++ curl -I http://127.0.0.1:8000/
+HTTP/1.0 200 OK
+Server: SimpleHTTP/0.6 Python/3.13.7
+Date: Wed, 22 Oct 2025 16:25:08 GMT
+Content-type: text/html; charset=utf-8
+Content-Length: 293
+++ curl -v http://127.0.0.1:8000/
+*   Trying 127.0.0.1:8000...
+* Connected to 127.0.0.1 (127.0.0.1) port 8000
+* using HTTP/1.x
+> GET / HTTP/1.1
+> Host: 127.0.0.1:8000
+> User-Agent: curl/8.15.0
+> Accept: */*
+> 
+* Request completely sent off
+* HTTP 1.0, assume close after body
+< HTTP/1.0 200 OK
+< Server: SimpleHTTP/0.6 Python/3.13.7
+< Date: Wed, 22 Oct 2025 16:25:22 GMT
+< Content-type: text/html; charset=utf-8
+< Content-Length: 293
+< 
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Directory listing for /</title>
+</head>
+<body>
+<h1>Directory listing for /</h1>
+<hr>
+<ul>
+<li><a href="Day_04.txt">Day_04.txt</a></li>
+<li><a href="scan_127_0_0_1.txt">scan_127_0_0_1.txt</a></li>
+</ul>
+<hr>
+</body>
+</html>
+* shutting down connection #0
+++ curl -v http://127.0.0.1:8000/robots.txt
+*   Trying 127.0.0.1:8000...
+* Connected to 127.0.0.1 (127.0.0.1) port 8000
+* using HTTP/1.x
+> GET /robots.txt HTTP/1.1
+> Host: 127.0.0.1:8000
+> User-Agent: curl/8.15.0
+> Accept: */*
+> 
+* Request completely sent off
+* HTTP 1.0, assume close after body
+< HTTP/1.0 404 File not found
+< Server: SimpleHTTP/0.6 Python/3.13.7
+< Date: Wed, 22 Oct 2025 16:25:45 GMT
+< Connection: close
+< Content-Type: text/html;charset=utf-8
+< Content-Length: 335
+< 
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Error response</title>
+    </head>
+    <body>
+        <h1>Error response</h1>
+        <p>Error code: 404</p>
+        <p>Message: File not found.</p>
+        <p>Error code explanation: 404 - Nothing matches the given URI.</p>
+    </body>
+</html>
+* shutting down connection #0
+7/ Check web:
+- Command: 
+sudo nmap -sV -p 8000 --script=http-enum,http-title,http-headers 127.0.0.1
+- Output:
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-10-22 12:28 EDT
+Nmap scan report for localhost (127.0.0.1)
+Host is up (0.000067s latency).
+
+PORT     STATE SERVICE VERSION
+8000/tcp open  http    SimpleHTTPServer 0.6 (Python 3.13.7)
+|_http-server-header: SimpleHTTP/0.6 Python/3.13.7
+|_http-title: Directory listing for /
+| http-headers: 
+|   Server: SimpleHTTP/0.6 Python/3.13.7
+|   Date: Wed, 22 Oct 2025 16:28:58 GMT
+|   Content-type: text/html; charset=utf-8
+|   Content-Length: 293
+|   
+|_  (Request type: HEAD)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 10.13 seconds
+8/ Search directory brute-force:
+- Command:
+gobuster dir -u http://127.0.0.1:8000 -w /usr/share/wordlists/dirb/common.txt
+- Output:
+===============================================================
+Gobuster v3.8
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://127.0.0.1:8000
+[+] Method:                  GET
+[+] Threads:                 10
+[+] Wordlist:                /usr/share/wordlists/dirb/common.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.8
+[+] Timeout:                 10s
+===============================================================
+Starting gobuster in directory enumeration mode
+===============================================================
+Progress: 4613 / 4613 (100.00%)
+===============================================================
+Finished
+===============================================================

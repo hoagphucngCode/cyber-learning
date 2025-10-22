@@ -1,0 +1,11 @@
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-10-22 12:19 EDT
+Nmap scan report for localhost (127.0.0.1)
+Host is up (0.0000060s latency).
+Not shown: 65534 closed tcp ports (reset)
+PORT     STATE SERVICE VERSION
+8000/tcp open  http    SimpleHTTPServer 0.6 (Python 3.13.7)
+|_http-title: Directory listing for /
+|_http-server-header: SimpleHTTP/0.6 Python/3.13.7
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 2 IP addresses (1 host up) scanned in 10.21 seconds
